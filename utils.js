@@ -59,6 +59,8 @@ async function parseFile(file) {
             count++;
             if (testcase.skipped) skipped++;
             if (testcase.failure || testcase.error) {
+                console.log(testcase);
+                
                 let stackTraceData = (
                     (testcase.failure && testcase.failure._cdata) ||
                     (testcase.failure && testcase.failure._text) ||
