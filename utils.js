@@ -59,13 +59,18 @@ async function parseFile(file) {
             count++;
             if (testcase.skipped) skipped++;
             if (testcase.failure || testcase.error) {
-                const stackTrace = (
+                let stackTraceData = (
                     (testcase.failure && testcase.failure._cdata) ||
                     (testcase.failure && testcase.failure._text) ||
                     (testcase.error && testcase.error._cdata) ||
                     (testcase.error && testcase.error._text) ||
                     ''
-                ).trim();
+                );
+
+                if (stackTraceData === undefined)
+                    stackTraceData = ''
+                
+                const stackTrace = stackTraceData.trim();
 
                 const message = (
                     (testcase.failure && testcase.failure._attributes && testcase.failure._attributes.message) ||
