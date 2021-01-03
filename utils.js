@@ -65,7 +65,7 @@ async function parseFile(file) {
                     (testcase.error && testcase.error._cdata) ||
                     (testcase.error && testcase.error._text) ||
                     ''
-                ).trim();
+                ).toString().trim();
 
                 const message = (
                     (testcase.failure && testcase.failure._attributes && testcase.failure._attributes.message) ||
