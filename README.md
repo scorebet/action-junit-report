@@ -82,7 +82,7 @@ $ npm run eslint
 ## License
 
     Copyright 2020 ScaCap
-    Modifications Copyright (C) 2020 Mike Penz
+    Modifications Copyright (C) 2021 Mike Penz
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
