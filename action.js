@@ -3,6 +3,8 @@ const github = require('@actions/github');
 const { Octokit } = require("@octokit/rest");
 const { parseTestReports } = require('./utils.js');
 
+const IDENTIFIER = "23edae2f-afea-4264-b56f-bc94eb0d4ea1"
+
 const action = async () => {
     const reportPaths = core.getInput('report_paths');
     core.info(`Going to parse results form ${reportPaths}`);
@@ -45,7 +47,43 @@ const action = async () => {
         const octokit = new Octokit({
             auth: githubToken,
         });
-        await octokit.checks.create(createCheckRequest);
+        const checkRequest = await octokit.checks.create(createCheckRequest);
+
+        if (pullRequest) {
+            const {
+                repo: {repo: repoName, owner: repoOwner},
+                runId: runId
+            } = github.context
+            const defaultParameter = {
+                repo: repoName,
+                owner: repoOwner
+            }
+            // Find unique comments
+            const {data: comments} = await octokit.issues.listComments({
+                ...defaultParameter,
+                issue_number: pullRequest.number
+            })
+            const targetComment = comments.find(c => {
+                return c.body.includes(IDENTIFIER)
+            })
+            // Delete previous comment if exist
+            if (targetComment) {
+                await octokit.issues.deleteComment({
+                    ...defaultParameter,
+                    comment_id: targetComment.id
+                })
+                core.info("Comment successfully delete for id: " + targetComment.id)
+            }
+            if (conclusion === "failure") {
+                const checkId = checkRequest.data.id
+                // Create comment
+                await octokit.issues.createComment({
+                    ...defaultParameter,
+                    issue_number: pullRequest.number,
+                    body: "Uh-oh! Some of the tests failed: https://github.com/scorebet/sportsbook-android/runs/" + checkId + " <!--  " + IDENTIFIER + " -->"
+                })
+            }
+        }
     } catch (error) {
         core.error(`Failed to create checks using the provided token. (${error})`);
         core.warning(`This usually indicates insufficient permissions. More details: https://github.com/mikepenz/action-junit-report/issues/32`);
