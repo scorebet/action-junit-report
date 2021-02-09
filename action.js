@@ -80,7 +80,7 @@ const action = async () => {
                 await octokit.issues.createComment({
                     ...defaultParameter,
                     issue_number: pullRequest.number,
-                    body: "Uh-oh! Some of the tests failed: https://github.com/scorebet/sportsbook-android/runs/" + checkId + " <!--  " + IDENTIFIER + " -->"
+                    body: "Uh-oh! Some of the tests failed: https://github.com/" + repoOwner + "/" + repoName + "/runs/" + checkId + " <!--  " + IDENTIFIER + " -->"
                 })
             }
         }
