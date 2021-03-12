@@ -11,6 +11,10 @@ inputs:
     description: 'junit xml report paths in glob format'
     required: false
     default: '**/junit-reports/TEST-*.xml'
+  fails_if_no_test_results:
+    description: 'should the action fail if no tests results are found'
+    required: false
+    default: 'true'
   check_name:
     description: 'check name for test reports'
     required: false

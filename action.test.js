@@ -6,6 +6,7 @@ const {
     finishedWithFailures,
     finishedSuccess,
     nothingFound,
+    nothingFoundSuccess,
     masterSuccess
 } = require('./action.test.fixtures');
 
@@ -43,7 +44,8 @@ describe('action should work', () => {
         inputs = {
             report_paths: '**/surefire-reports/TEST-*.xml',
             github_token: 'GITHUB_TOKEN',
-            check_name: 'Test Report'
+            check_name: 'Test Report',
+            fails_if_no_test_results: 'true'
         };
     });
 
@@ -93,6 +95,22 @@ describe('action should work', () => {
         scope.done();
 
         expect(request).toStrictEqual(nothingFound);
+    });
+
+    it('should send success if no test results were found but fails_if_no_test_results is false', async () => {
+        inputs.report_paths = '**/xxx/*.xml';
+        inputs.fails_if_no_test_results = 'false';
+        let request = null;
+        const scope = nock('https://api.github.com')
+            .post('/repos/mikepenz/action-junit-report/check-runs', body => {
+                request = body;
+                return body;
+            })
+            .reply(200, {});
+        await action();
+        scope.done();
+
+        expect(request).toStrictEqual(nothingFoundSuccess);
     });
 
     it('should send reports to sha if no pr detected', async () => {
