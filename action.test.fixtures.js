@@ -190,4 +190,16 @@ const nothingFound = {
     }
 };
 
-module.exports = { finishedWithFailures, finishedSuccess, nothingFound, masterSuccess };
+const nothingFoundSuccess = {
+    name: 'Test Report',
+    head_sha: 'sha123',
+    status: 'completed',
+    conclusion: 'success',
+    output: {
+        title: 'No test results found!',
+        summary: '',
+        annotations: []
+    }
+};
+
+module.exports = { finishedWithFailures, finishedSuccess, nothingFound, nothingFoundSuccess, masterSuccess };

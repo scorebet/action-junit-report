@@ -8576,6 +8576,7 @@ const IDENTIFIER = "23edae2f-afea-4264-b56f-bc94eb0d4ea1"
 
 const action = async () => {
     const reportPaths = core.getInput('report_paths');
+    const failsIfNoTestResults = core.getInput('fails_if_no_test_results') == 'true';
     core.info(`Going to parse results form ${reportPaths}`);
     const githubToken = core.getInput('github_token');
     const name = core.getInput('check_name');
@@ -8590,7 +8591,7 @@ const action = async () => {
 
     const pullRequest = github.context.payload.pull_request;
     const link = pullRequest && pullRequest.html_url || github.context.ref;
-    const conclusion = foundResults && annotations.length === 0 ? 'success' : 'failure';
+    const conclusion = (foundResults || !failsIfNoTestResults) && annotations.length === 0 ? 'success' : 'failure';
     const status = 'completed';
     const head_sha = commit || pullRequest && pullRequest.head.sha || github.context.sha;
     core.info(
